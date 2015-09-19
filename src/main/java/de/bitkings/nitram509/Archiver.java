@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Archiver implements Closeable {
 
-  private static final long MAX = 100_000_000;
+  private static final long MAX_ARCHIVE_SIZE = 100_000_000;
   private long estimatedFileSized = 0;
   private int indexCounter = 0;
   private TarArchiveOutputStream taos;
@@ -27,6 +27,7 @@ public class Archiver implements Closeable {
   }
 
   public void add(String name, byte[] data) throws IOException {
+    System.out.println("Adding " + name);
     splitArchiveIfRequired(data.length);
     TarArchiveEntry entry = new TarArchiveEntry(name);
     entry.setSize(data.length);
@@ -37,10 +38,13 @@ public class Archiver implements Closeable {
   }
 
   private void splitArchiveIfRequired(int length) throws IOException {
-    if (estimatedFileSized + length > MAX) {
+    if (estimatedFileSized + length > MAX_ARCHIVE_SIZE) {
       taos.close();
       indexCounter++;
+      estimatedFileSized = 0;
       createArchive();
+    } else {
+      estimatedFileSized = estimatedFileSized + length;
     }
   }
 
