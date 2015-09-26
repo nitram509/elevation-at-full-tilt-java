@@ -17,8 +17,7 @@ public class GranuleMetaDataFileReader {
   public GranuleMetaDataFile read(InputStream xml) throws JAXBException, ParserConfigurationException, SAXException {
     JAXBContext jc = JAXBContext.newInstance(GranuleMetaDataFile.class);
     Unmarshaller unmarshaller = jc.createUnmarshaller();
-    GranuleMetaDataFile granuleMetaData = (GranuleMetaDataFile) unmarshaller.unmarshal(createNonValidatingXmlReader(xml));
-    return granuleMetaData;
+    return (GranuleMetaDataFile) unmarshaller.unmarshal(createNonValidatingXmlReader(xml));
   }
 
   private SAXSource createNonValidatingXmlReader(InputStream xml) throws ParserConfigurationException, SAXException {
