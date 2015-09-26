@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
@@ -14,7 +15,7 @@ import java.util.zip.ZipInputStream;
 
 public class Packager {
 
-  private static final String EXAMPLE_FOLDER = "/Users/martinki/srtm/http__e4ftl01.cr.usgs.gov__SRTM__SRTMGL3.003__2000.02.11";
+  private static final String EXAMPLE_FOLDER = "d:\\srtm-data\\http__e4ftl01.cr.usgs.gov__SRTM__SRTMGL3.003__2000.02.11";
   private static final String EXAMPLE_FILE = "/Users/martinki/srtm/http__e4ftl01.cr.usgs.gov__SRTM__SRTMGL3.003__2000.02.11/S56W071.SRTMGL3.hgt.zip";
 
   public static void main(String[] args) {
@@ -27,11 +28,12 @@ public class Packager {
   }
 
   private void compressFilesFromFolder(String basePath) throws Exception {
-    File[] zipFiles = new File(basePath).listFiles(path -> {
-      return path.getName().endsWith(".hgt.zip");
+    File[] files = new File(basePath).listFiles(path -> {
+      String fname = path.getName().toLowerCase();
+      return fname.endsWith(".hgt") || fname.endsWith(".hgt.zip");
     });
-    //compressFiles(zipFiles);
-    determineDelta(zipFiles);
+    compressFiles(files);
+//    determineDelta(files);
   }
 
   private void determineDelta(File[] zipFiles) throws Exception {
@@ -56,10 +58,17 @@ public class Packager {
       System.out.println(String.format("min=%d,max=%d,delta=%d", min, max, max - min));
   }
 
-  private void compressFiles(File[] zipFiles) throws Exception {
+  private void compressFiles(File[] files) throws Exception {
     try (Archiver archiver = new Archiver("test")) {
-      for (File zipFile : zipFiles) {
-        Lz4Bucket lz4Bucket = openFromZipFile(zipFile);
+      for (File f : files) {
+        final Lz4Bucket lz4Bucket;
+        if (f.getName().toLowerCase().endsWith(".zip")) {
+          lz4Bucket = openFromZipFile(f);
+        } else if (f.getName().toLowerCase().endsWith(".hgt")) {
+          lz4Bucket = openFromHgtFile(f);
+        } else {
+          throw new UnsupportedOperationException("Unknown file type '" + f.getName() + "' - only .zip or .hgt are supported.");
+        }
         byte[] hgtCompressed = compressLz4(lz4Bucket.data);
         archiver.add(lz4Bucket.name, hgtCompressed);
       }
@@ -72,6 +81,12 @@ public class Packager {
       String name = nextEntry.getName();
       assert name.endsWith(".hgt");
       return new Lz4Bucket(name, IOUtils.toByteArray(zis));
+    }
+  }
+
+  private Lz4Bucket openFromHgtFile(File hgtFile) throws Exception {
+    try (InputStream zis = new FileInputStream(hgtFile)) {
+      return new Lz4Bucket(hgtFile.getName(), IOUtils.toByteArray(zis));
     }
   }
 
