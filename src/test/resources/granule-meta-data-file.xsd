@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="GranuleMetaDataFile">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="DTDVersion" type="xsd:decimal" />
+        <xsd:element name="DataCenterId" type="xsd:string" />
+        <xsd:element name="GranuleURMetaData">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="GranuleUR" type="xsd:string" />
+              <xsd:element name="DbID" type="xsd:int" />
+              <xsd:element name="InsertTime" type="xsd:dateTime" />
+              <xsd:element name="LastUpdate" type="xsd:dateTime" />
+              <xsd:element name="CollectionMetaData">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="ShortName" type="xsd:string" />
+                    <xsd:element name="VersionID" type="xsd:int" />
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="DataFiles">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="DataFileContainer">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element name="DistributedFileName" type="xsd:string" />
+                          <xsd:element name="FileSize" type="xsd:int" />
+                          <xsd:element name="ChecksumType" type="xsd:string" />
+                          <xsd:element name="Checksum" type="xsd:int" />
+                          <xsd:element name="ChecksumOrigin" type="xsd:string" />
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="ECSDataGranule">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="SizeMBECSDataGranule" type="xsd:decimal" />
+                    <xsd:element name="LocalGranuleID" type="xsd:string" />
+                    <xsd:element name="ProductionDateTime" type="xsd:dateTime" />
+                    <xsd:element name="LocalVersionID" type="xsd:int" />
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="RangeDateTime">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="RangeEndingTime" type="xsd:dateTime" />
+                    <xsd:element name="RangeEndingDate" type="xsd:dateTime" />
+                    <xsd:element name="RangeBeginningTime" type="xsd:dateTime" />
+                    <xsd:element name="RangeBeginningDate" type="xsd:dateTime" />
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="SpatialDomainContainer">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="HorizontalSpatialDomainContainer">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element name="BoundingRectangle">
+                            <xsd:complexType>
+                              <xsd:sequence>
+                                <xsd:element name="WestBoundingCoordinate" type="xsd:decimal" />
+                                <xsd:element name="NorthBoundingCoordinate" type="xsd:decimal" />
+                                <xsd:element name="EastBoundingCoordinate" type="xsd:decimal" />
+                                <xsd:element name="SouthBoundingCoordinate" type="xsd:decimal" />
+                              </xsd:sequence>
+                            </xsd:complexType>
+                          </xsd:element>
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="BrowseProduct">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="BrowseGranuleId" type="xsd:string" />
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="PSAs">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" name="PSA">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element name="PSAName" type="xsd:string" />
+                          <xsd:element name="PSAValue" type="xsd:string" />
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="QAProduct">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="QAGranuleId" type="xsd:string" />
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>
