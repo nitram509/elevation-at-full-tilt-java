@@ -1,7 +1,5 @@
 package de.bitkings.nitram509.srtm;
 
-import javafx.geometry.Rectangle2D;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,15 +8,24 @@ import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "archiveLocatorId",
+    "archiveNumber",
     "name",
     "boundingBox"
 })
 @XmlRootElement(name = "SrtmTile")
 public class SrtmTile implements Serializable {
   public String name;
-  public short archiveLocatorId;
+  public short archiveNumber;
   public BoundingBox boundingBox;
+
+  public SrtmTile() {
+  }
+
+  public SrtmTile(String name, short archiveNumber, BoundingBox boundingBox) {
+    this.name = name;
+    this.archiveNumber = archiveNumber;
+    this.boundingBox = boundingBox;
+  }
 
   @Override
   public boolean equals(Object o) {

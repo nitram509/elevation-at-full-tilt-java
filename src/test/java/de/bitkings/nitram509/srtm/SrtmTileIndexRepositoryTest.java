@@ -23,15 +23,15 @@ public class SrtmTileIndexRepositoryTest {
   @Test
   public void index_can_be_written_and_read_back_again() throws Exception {
     SrtmTileIndex expectedIndex = new SrtmTileIndex();
-    expectedIndex.index.put("FOO", createTestTile());
+    expectedIndex.put("FOO", createTestTile());
     repository.write(expectedIndex, tempFile);
     assertThat(Files.size(tempFile.toPath())).describedAs(tempFile.getAbsolutePath()).isGreaterThan(0);
 
     SrtmTileIndex actualIndex = repository.read(tempFile);
     assertThat(actualIndex).describedAs(tempFile.getAbsolutePath()).isNotNull();
 
-    SrtmTile actualTile = actualIndex.index.get("FOO");
-    SrtmTile expectedTile = expectedIndex.index.get("FOO");
+    SrtmTile actualTile = actualIndex.get("FOO");
+    SrtmTile expectedTile = expectedIndex.get("FOO");
     assertThat(actualTile).isEqualTo(expectedTile);
     assertThat(actualTile.boundingBox).isEqualTo(expectedTile.boundingBox);
   }
@@ -39,7 +39,7 @@ public class SrtmTileIndexRepositoryTest {
   private SrtmTile createTestTile() {
     SrtmTile tile = new SrtmTile();
     tile.name = "FOO";
-    tile.archiveLocatorId = 123;
+    tile.archiveNumber = 123;
     tile.boundingBox = new BoundingBox(1, 2, 3, 4);
     return tile;
   }

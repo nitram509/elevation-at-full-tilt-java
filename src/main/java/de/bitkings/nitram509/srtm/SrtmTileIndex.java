@@ -15,6 +15,17 @@ import java.util.Map;
 @XmlRootElement(name = "SrtmTileIndex")
 public class SrtmTileIndex implements Serializable {
 
-  public Map<String, SrtmTile> index = new HashMap<>();
+  private Map<String, SrtmTile> index = new HashMap<>();
 
+  public SrtmTile get(String key) {
+    return index.get(key);
+  }
+
+  public SrtmTile put(String key, SrtmTile value) {
+    return index.put(key, value);
+  }
+
+  public SrtmTile remove(String key) {
+    return index.remove(key);
+  }
 }
