@@ -1,9 +1,15 @@
 package de.bitkings.nitram509;
 
+import de.bitkings.nitram509.srtm.BoundingBox;
+import de.bitkings.nitram509.srtm.metafile.GranuleMetaDataFile;
+import de.bitkings.nitram509.srtm.metafile.GranuleMetaDataFileReader;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
 import org.apache.commons.io.IOUtils;
+import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,8 +21,9 @@ import java.util.zip.ZipInputStream;
 
 public class Packager {
 
-  private static final String EXAMPLE_FOLDER = "d:\\srtm-data\\http__e4ftl01.cr.usgs.gov__SRTM__SRTMGL3.003__2000.02.11";
+  private static final String EXAMPLE_FOLDER = "d:\\srtm-data\\SRTM3\\http__e4ftl01.cr.usgs.gov__SRTM__SRTMGL3.003__2000.02.11";
   private static final String EXAMPLE_FILE = "/Users/martinki/srtm/http__e4ftl01.cr.usgs.gov__SRTM__SRTMGL3.003__2000.02.11/S56W071.SRTMGL3.hgt.zip";
+  private GranuleMetaDataFileReader reader = new GranuleMetaDataFileReader();
 
   public static void main(String[] args) {
     try {
@@ -70,9 +77,27 @@ public class Packager {
           throw new UnsupportedOperationException("Unknown file type '" + f.getName() + "' - only .zip or .hgt are supported.");
         }
         byte[] hgtCompressed = compressLz4(lz4Bucket.data);
-        archiver.add(lz4Bucket.name, hgtCompressed);
+        BoundingBox boundingBox = readBoundingBoxFromGranuleMetaData(f);
+        archiver.add(lz4Bucket.name, hgtCompressed, boundingBox);
       }
     }
+  }
+
+  private BoundingBox readBoundingBoxFromGranuleMetaData(File baseFile) throws IOException, JAXBException, ParserConfigurationException, SAXException {
+    File metaDataFileName = new File(baseFile.getAbsolutePath() + ".xml");
+    if (metaDataFileName.exists()) {
+      try (InputStream is = new FileInputStream(metaDataFileName)) {
+        GranuleMetaDataFile granuleMetaDataFile = reader.read(is);
+        GranuleMetaDataFile.GranuleURMetaData.SpatialDomainContainer.HorizontalSpatialDomainContainer.BoundingRectangle boundingRectangle = granuleMetaDataFile.getGranuleURMetaData().getSpatialDomainContainer().getHorizontalSpatialDomainContainer().getBoundingRectangle();
+        return new BoundingBox(
+            boundingRectangle.getNorthBoundingCoordinate().doubleValue(),
+            boundingRectangle.getEastBoundingCoordinate().doubleValue(),
+            boundingRectangle.getSouthBoundingCoordinate().doubleValue(),
+            boundingRectangle.getWestBoundingCoordinate().doubleValue()
+        );
+      }
+    }
+    return null;
   }
 
   private Lz4Bucket openFromZipFile(File hgtZipFile) throws Exception {

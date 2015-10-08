@@ -1,18 +1,19 @@
 package de.bitkings.nitram509;
 
+import de.bitkings.nitram509.srtm.BoundingBox;
 import de.bitkings.nitram509.srtm.SrtmTile;
-import de.bitkings.nitram509.srtm.SrtmTileIndex;
-import de.bitkings.nitram509.srtm.SrtmTileIndexRepository;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 
-import javax.xml.bind.JAXBException;
-import java.io.*;
+import java.io.Closeable;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-public class Archiver implements Closeable {
+class Archiver implements Closeable {
 
   private static final long MAX_ARCHIVE_SIZE = 100_000_000;
-  private final SrtmTileIndex srtmTileIndex;
+  private final Indexer indexer;
   private long estimatedFileSized = 0;
   private int currentArchiveNumber = 0;
   private TarArchiveOutputStream taos;
@@ -20,7 +21,7 @@ public class Archiver implements Closeable {
 
   public Archiver(String baseName) throws FileNotFoundException {
     this.baseName = baseName;
-    this.srtmTileIndex = new SrtmTileIndex();
+    this.indexer = new Indexer(baseName);
     createArchive();
   }
 
@@ -29,7 +30,7 @@ public class Archiver implements Closeable {
     taos = new TarArchiveOutputStream(new FileOutputStream(name));
   }
 
-  public void add(String name, byte[] data) throws IOException {
+  public void add(String name, byte[] data, BoundingBox boundingBox) throws IOException {
     System.out.println("Adding " + name);
     splitArchiveIfRequired(data.length);
     TarArchiveEntry entry = new TarArchiveEntry(name);
@@ -39,7 +40,7 @@ public class Archiver implements Closeable {
     taos.write(data);
     taos.closeArchiveEntry();
     String key = name.substring(0, name.length() - 4);
-    srtmTileIndex.put(key, new SrtmTile(key, (short) currentArchiveNumber, null));
+    indexer.add(new SrtmTile(key, (short) currentArchiveNumber, boundingBox));
   }
 
   private void splitArchiveIfRequired(int length) throws IOException {
@@ -55,15 +56,7 @@ public class Archiver implements Closeable {
 
   public void close() throws IOException {
     taos.close();
-    persistIndex();
+    indexer.persistIndex();
   }
 
-  private void persistIndex() {
-    try {
-      SrtmTileIndexRepository indexRepository = new SrtmTileIndexRepository();
-      indexRepository.write(srtmTileIndex, new File(baseName + ".index.xml"));
-    } catch (JAXBException e) {
-      throw new RuntimeException(e);
-    }
-  }
 }
