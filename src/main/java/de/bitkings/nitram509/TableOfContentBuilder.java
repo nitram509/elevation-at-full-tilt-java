@@ -8,12 +8,14 @@ import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-class Indexer {
+class TableOfContentBuilder {
+
+  public static final String TOC_XML_FILE_EXTENSION = ".toc.xml";
 
   private final SrtmTileArchiveToc srtmTileArchiveToc;
   private String baseName;
 
-  public Indexer(String baseName) throws FileNotFoundException {
+  public TableOfContentBuilder(String baseName) throws FileNotFoundException {
     this.baseName = baseName;
     this.srtmTileArchiveToc = new SrtmTileArchiveToc();
   }
@@ -25,7 +27,7 @@ class Indexer {
   public void persistIndex() {
     try {
       SrtmTileArchiveTocRepository indexRepository = new SrtmTileArchiveTocRepository();
-      indexRepository.write(srtmTileArchiveToc, new File(baseName + ".index.xml"));
+      indexRepository.write(srtmTileArchiveToc, new File(baseName + TOC_XML_FILE_EXTENSION));
     } catch (JAXBException e) {
       throw new RuntimeException(e);
     }

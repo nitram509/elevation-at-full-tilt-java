@@ -21,8 +21,8 @@ import java.util.zip.ZipInputStream;
 
 public class Packager {
 
-  private static final String EXAMPLE_FOLDER = "d:\\srtm-data\\SRTM3\\http__e4ftl01.cr.usgs.gov__SRTM__SRTMGL3.003__2000.02.11";
-  private static final String EXAMPLE_FILE = "/Users/martinki/srtm/http__e4ftl01.cr.usgs.gov__SRTM__SRTMGL3.003__2000.02.11/S56W071.SRTMGL3.hgt.zip";
+  public static final String EXAMPLE_FOLDER = "d:\\srtm-data\\SRTM3\\http__e4ftl01.cr.usgs.gov__SRTM__SRTMGL3.003__2000.02.11";
+
   private GranuleMetaDataFileReader reader = new GranuleMetaDataFileReader();
 
   public static void main(String[] args) {

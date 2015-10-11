@@ -1,6 +1,7 @@
 package de.bitkings.nitram509.srtm.metafile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.bitkings.nitram509.Packager;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.LngLatAlt;
@@ -21,8 +22,6 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 public class MetaFile2GeoJsonLearningTest {
-
-  private static final String EXAMPLE_FOLDER = "d:\\srtm-data\\SRTM3\\http__e4ftl01.cr.usgs.gov__SRTM__SRTMGL3.003__2000.02.11";
 
   private GranuleMetaDataFileReader granuleMetaDataFileReader;
   private File[] allXmlMetaDataFiles;
@@ -59,7 +58,7 @@ public class MetaFile2GeoJsonLearningTest {
   }
 
   private File[] findAllXmlMetaDataFiles() {
-    File[] files = new File(EXAMPLE_FOLDER).listFiles(path -> {
+    File[] files = new File(Packager.EXAMPLE_FOLDER).listFiles(path -> {
       String fname = path.getName().toLowerCase();
       return fname.endsWith(".xml");
     });

@@ -13,7 +13,7 @@ import java.io.IOException;
 class Archiver implements Closeable {
 
   private static final long MAX_ARCHIVE_SIZE = 100_000_000;
-  private final Indexer indexer;
+  private final TableOfContentBuilder tableOfContentBuilder;
   private long estimatedFileSized = 0;
   private int currentArchiveNumber = 0;
   private TarArchiveOutputStream taos;
@@ -21,7 +21,7 @@ class Archiver implements Closeable {
 
   public Archiver(String baseName) throws FileNotFoundException {
     this.baseName = baseName;
-    this.indexer = new Indexer(baseName);
+    this.tableOfContentBuilder = new TableOfContentBuilder(baseName);
     createArchive();
   }
 
@@ -40,7 +40,7 @@ class Archiver implements Closeable {
     taos.write(data);
     taos.closeArchiveEntry();
     String key = name.substring(0, name.length() - 4);
-    indexer.add(new SrtmTile(key, (short) currentArchiveNumber, boundingBox));
+    tableOfContentBuilder.add(new SrtmTile(key, (short) currentArchiveNumber, boundingBox));
   }
 
   private void splitArchiveIfRequired(int length) throws IOException {
@@ -56,7 +56,7 @@ class Archiver implements Closeable {
 
   public void close() throws IOException {
     taos.close();
-    indexer.persistIndex();
+    tableOfContentBuilder.persistIndex();
   }
 
 }

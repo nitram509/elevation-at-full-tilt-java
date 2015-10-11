@@ -21,12 +21,12 @@ import java.util.List;
 @Named
 public class SrtmElevationService implements Closeable, ElevationService {
 
-  private static final File INDEX_FILE = new File("test.index.xml");
+  private static final File INDEX_FILE = new File("test" + TableOfContentBuilder.TOC_XML_FILE_EXTENSION);
   private SpatialIndex spatialIndex;
 
   public SrtmElevationService() {
     try {
-      initQuadTree(readTileIndex());
+      initSpatialIndex(readTileIndex());
     } catch (JAXBException e) {
       throw new RuntimeException(e);
     }
@@ -38,7 +38,7 @@ public class SrtmElevationService implements Closeable, ElevationService {
     return srtmTileArchiveToc.getAll();
   }
 
-  private void initQuadTree(Collection<SrtmTile> srtmTiles) throws JAXBException {
+  private void initSpatialIndex(Collection<SrtmTile> srtmTiles) throws JAXBException {
     spatialIndex = new STRtree();
     for (SrtmTile srtmTile : srtmTiles) {
       Coordinate upperLeft = new Coordinate(srtmTile.boundingBox.west, srtmTile.boundingBox.north);
@@ -51,7 +51,8 @@ public class SrtmElevationService implements Closeable, ElevationService {
   @Override
   public int getElevation(double latitude, double longitude) throws IOException {
     List tiles = spatialIndex.query(new Envelope(new Coordinate(longitude, latitude)));
-    if (tiles.size() > 0) {
+    if (tiles.size() == 1) {
+      Object o = tiles.get(0);
       return 1;
     }
     return -1;
