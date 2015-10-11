@@ -2,10 +2,11 @@ package de.bitkings.nitram509;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.index.quadtree.Quadtree;
+import com.vividsolutions.jts.index.SpatialIndex;
+import com.vividsolutions.jts.index.strtree.STRtree;
 import de.bitkings.nitram509.srtm.SrtmTile;
-import de.bitkings.nitram509.srtm.SrtmTileIndex;
-import de.bitkings.nitram509.srtm.SrtmTileIndexRepository;
+import de.bitkings.nitram509.srtm.SrtmTileArchiveToc;
+import de.bitkings.nitram509.srtm.SrtmTileArchiveTocRepository;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -14,13 +15,14 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 @Singleton
 @Named
 public class SrtmElevationService implements Closeable, ElevationService {
 
   private static final File INDEX_FILE = new File("test.index.xml");
-  private Quadtree quadtree;
+  private SpatialIndex spatialIndex;
 
   public SrtmElevationService() {
     try {
@@ -31,23 +33,27 @@ public class SrtmElevationService implements Closeable, ElevationService {
   }
 
   private Collection<SrtmTile> readTileIndex() throws JAXBException {
-    SrtmTileIndexRepository srtmTileIndexRepository = new SrtmTileIndexRepository();
-    SrtmTileIndex srtmTileIndex = srtmTileIndexRepository.read(INDEX_FILE);
-    return srtmTileIndex.getAll();
+    SrtmTileArchiveTocRepository srtmTileArchiveTocRepository = new SrtmTileArchiveTocRepository();
+    SrtmTileArchiveToc srtmTileArchiveToc = srtmTileArchiveTocRepository.read(INDEX_FILE);
+    return srtmTileArchiveToc.getAll();
   }
 
   private void initQuadTree(Collection<SrtmTile> srtmTiles) throws JAXBException {
-    quadtree = new Quadtree();
+    spatialIndex = new STRtree();
     for (SrtmTile srtmTile : srtmTiles) {
       Coordinate upperLeft = new Coordinate(srtmTile.boundingBox.west, srtmTile.boundingBox.north);
       Coordinate lowerRight = new Coordinate(srtmTile.boundingBox.east, srtmTile.boundingBox.south);
       Envelope envelope = new Envelope(upperLeft, lowerRight);
-      quadtree.insert(envelope, srtmTile);
+      spatialIndex.insert(envelope, srtmTile);
     }
   }
 
   @Override
   public int getElevation(double latitude, double longitude) throws IOException {
+    List tiles = spatialIndex.query(new Envelope(new Coordinate(longitude, latitude)));
+    if (tiles.size() > 0) {
+      return 1;
+    }
     return -1;
   }
 

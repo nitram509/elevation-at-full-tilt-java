@@ -14,7 +14,7 @@ import java.util.Map;
     "index",
 })
 @XmlRootElement(name = "SrtmTileIndex")
-public class SrtmTileIndex implements Serializable {
+public class SrtmTileArchiveToc implements Serializable {
 
   private Map<String, SrtmTile> index = new HashMap<>();
 

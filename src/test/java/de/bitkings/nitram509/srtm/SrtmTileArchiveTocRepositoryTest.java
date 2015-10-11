@@ -8,26 +8,26 @@ import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SrtmTileIndexRepositoryTest {
+public class SrtmTileArchiveTocRepositoryTest {
 
-  private SrtmTileIndexRepository repository;
+  private SrtmTileArchiveTocRepository repository;
   private File tempFile;
 
   @BeforeMethod
   public void setUp() throws Exception {
-    repository = new SrtmTileIndexRepository();
+    repository = new SrtmTileArchiveTocRepository();
     tempFile = File.createTempFile("srtm.tile.index", ".xml");
     tempFile.deleteOnExit();
   }
 
   @Test
   public void index_can_be_written_and_read_back_again() throws Exception {
-    SrtmTileIndex expectedIndex = new SrtmTileIndex();
+    SrtmTileArchiveToc expectedIndex = new SrtmTileArchiveToc();
     expectedIndex.put("FOO", createTestTile());
     repository.write(expectedIndex, tempFile);
     assertThat(Files.size(tempFile.toPath())).describedAs(tempFile.getAbsolutePath()).isGreaterThan(0);
 
-    SrtmTileIndex actualIndex = repository.read(tempFile);
+    SrtmTileArchiveToc actualIndex = repository.read(tempFile);
     assertThat(actualIndex).describedAs(tempFile.getAbsolutePath()).isNotNull();
 
     SrtmTile actualTile = actualIndex.get("FOO");

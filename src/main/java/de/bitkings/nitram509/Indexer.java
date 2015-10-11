@@ -1,8 +1,8 @@
 package de.bitkings.nitram509;
 
 import de.bitkings.nitram509.srtm.SrtmTile;
-import de.bitkings.nitram509.srtm.SrtmTileIndex;
-import de.bitkings.nitram509.srtm.SrtmTileIndexRepository;
+import de.bitkings.nitram509.srtm.SrtmTileArchiveToc;
+import de.bitkings.nitram509.srtm.SrtmTileArchiveTocRepository;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -10,22 +10,22 @@ import java.io.FileNotFoundException;
 
 class Indexer {
 
-  private final SrtmTileIndex srtmTileIndex;
+  private final SrtmTileArchiveToc srtmTileArchiveToc;
   private String baseName;
 
   public Indexer(String baseName) throws FileNotFoundException {
     this.baseName = baseName;
-    this.srtmTileIndex = new SrtmTileIndex();
+    this.srtmTileArchiveToc = new SrtmTileArchiveToc();
   }
 
   public void add(SrtmTile srtmTile) {
-    srtmTileIndex.put(srtmTile.name, srtmTile);
+    srtmTileArchiveToc.put(srtmTile.name, srtmTile);
   }
 
   public void persistIndex() {
     try {
-      SrtmTileIndexRepository indexRepository = new SrtmTileIndexRepository();
-      indexRepository.write(srtmTileIndex, new File(baseName + ".index.xml"));
+      SrtmTileArchiveTocRepository indexRepository = new SrtmTileArchiveTocRepository();
+      indexRepository.write(srtmTileArchiveToc, new File(baseName + ".index.xml"));
     } catch (JAXBException e) {
       throw new RuntimeException(e);
     }

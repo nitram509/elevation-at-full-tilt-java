@@ -16,7 +16,7 @@ public class SrtmElevationServiceLearningTest {
 
   @Test
   public void loading_index_into_quadtree() throws Exception {
-    int elevation = service.getElevation(1, 1);
+    int elevation = service.getElevation(52.13, 14.1);
     assertThat(elevation).isNotEqualTo(-1);
   }
 }

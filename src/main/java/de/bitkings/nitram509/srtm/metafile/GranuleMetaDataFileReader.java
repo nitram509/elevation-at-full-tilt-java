@@ -14,8 +14,17 @@ import java.io.InputStream;
 
 public class GranuleMetaDataFileReader {
 
+  private final JAXBContext jc;
+
+  public GranuleMetaDataFileReader() {
+    try {
+      jc = JAXBContext.newInstance(GranuleMetaDataFile.class);
+    } catch (JAXBException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public GranuleMetaDataFile read(InputStream xml) throws JAXBException, ParserConfigurationException, SAXException {
-    JAXBContext jc = JAXBContext.newInstance(GranuleMetaDataFile.class);
     Unmarshaller unmarshaller = jc.createUnmarshaller();
     return (GranuleMetaDataFile) unmarshaller.unmarshal(createNonValidatingXmlReader(xml));
   }
