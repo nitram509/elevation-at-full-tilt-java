@@ -17,17 +17,16 @@ class Archiver implements Closeable {
   private long estimatedFileSized = 0;
   private int currentArchiveNumber = 0;
   private TarArchiveOutputStream taos;
-  private String baseName;
+  private ArchiveNamer archiveNamer;
 
   public Archiver(String baseName) throws FileNotFoundException {
-    this.baseName = baseName;
+    this.archiveNamer = new ArchiveNamer(baseName);
     this.tableOfContentBuilder = new TableOfContentBuilder(baseName);
     createArchive();
   }
 
   private void createArchive() throws FileNotFoundException {
-    String name = String.format("%s.%04d.tar", baseName, currentArchiveNumber);
-    taos = new TarArchiveOutputStream(new FileOutputStream(name));
+    taos = new TarArchiveOutputStream(new FileOutputStream(archiveNamer.getArchiveFileName(currentArchiveNumber)));
   }
 
   public void add(String name, byte[] data, BoundingBox boundingBox) throws IOException {

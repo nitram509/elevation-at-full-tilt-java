@@ -14,18 +14,18 @@ import java.io.InputStream;
 
 public class GranuleMetaDataFileReader {
 
-  private final JAXBContext jc;
+  private final JAXBContext context;
 
   public GranuleMetaDataFileReader() {
     try {
-      jc = JAXBContext.newInstance(GranuleMetaDataFile.class);
+      context = JAXBContext.newInstance(GranuleMetaDataFile.class);
     } catch (JAXBException e) {
       throw new RuntimeException(e);
     }
   }
 
   public GranuleMetaDataFile read(InputStream xml) throws JAXBException, ParserConfigurationException, SAXException {
-    Unmarshaller unmarshaller = jc.createUnmarshaller();
+    Unmarshaller unmarshaller = context.createUnmarshaller();
     return (GranuleMetaDataFile) unmarshaller.unmarshal(createNonValidatingXmlReader(xml));
   }
 
