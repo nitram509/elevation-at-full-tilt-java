@@ -20,12 +20,15 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
 
 @Singleton
 @Named
-public class SrtmElevationService implements Closeable, ElevationService {
+public class SrtmElevationService implements ElevationService {
+
+  private static double NO_OF_PIXELS_PER_LINE = 1201;
 
   private SpatialIndex spatialIndex;
 
@@ -58,39 +61,29 @@ public class SrtmElevationService implements Closeable, ElevationService {
   }
 
   @Override
-  public int getElevation(double latitude, double longitude) throws IOException {
+  public int getElevation(double latitude, double longitude) throws IOException, NoSuchAlgorithmException {
     List tiles = spatialIndex.query(new Envelope(new Coordinate(longitude, latitude)));
     if (tiles.size() == 1) {
       SrtmTile tile = (SrtmTile) tiles.get(0);
       byte[] srtmTileData = getSrtmTileData(tile);
-      calculateOffset(tile.boundingBox, latitude, longitude);
-      return 1;
+      if (srtmTileData != null && srtmTileData.length > 1) {
+        int offset = calculateOffset(tile.boundingBox, latitude, longitude);
+        return ((int) srtmTileData[offset] & 0xff) << 8 | (int) srtmTileData[offset + 1] & 0xff;
+      }
     }
     return Short.MIN_VALUE;
   }
 
-  private void calculateOffset(BoundingBox boundingBox, double latitude, double longitude) {
-//    dLat := math.Abs(lat - upperLeft[1])
-//    dLon := math.Abs(lon - upperLeft[0])
-//    distLat := math.Abs(upperLeft[1] - lowerRight[1])
-//    distLon := math.Abs(upperLeft[0] - lowerRight[0])
-//    nearestLat := int(dLat * float64(NO_OF_PIXELS_PER_LINE) / distLat);
-//    nearestLon := int(dLon * float64(NO_OF_PIXELS_PER_LINE) / distLon)
-//    return int64(NO_OF_PIXELS_PER_LINE * nearestLat + nearestLon) << 1
+  private int calculateOffset(BoundingBox boundingBox, double latitude, double longitude) {
+    BoundingRect rect = calculateUpperLeftAndLowerRightLikeGdalDataSet(boundingBox);
+    double dLat = Math.abs(latitude - rect.upperLeft[1]);
+    double dLon = Math.abs(longitude - rect.upperLeft[0]);
+    double distLat = Math.abs(rect.upperLeft[1] - rect.lowerRight[1]);
+    double distLon = Math.abs(rect.upperLeft[0] - rect.lowerRight[0]);
+    long nearestLat = (long) (dLat * NO_OF_PIXELS_PER_LINE / distLat);
+    long nearestLon = (long) (dLon * NO_OF_PIXELS_PER_LINE / distLon);
+    return (int) (((long) (NO_OF_PIXELS_PER_LINE)) * nearestLat + nearestLon) << 1;
   }
-
-//
-//  func calculateUpperLeftAndLowerRightLikeGdalDataSet(boundingRectangle BoundingRectangle) (quadtree.Twof, quadtree.Twof) {
-//    upperLeft := quadtree.Twof{
-//      boundingRectangle.WestBoundingCoordinate + 0.5 / float64(NO_OF_PIXELS_PER_LINE - 1),
-//          boundingRectangle.NorthBoundingCoordinate - 0.5 / float64(NO_OF_PIXELS_PER_LINE - 1),
-//    }
-//    lowerRight := quadtree.Twof{
-//      boundingRectangle.EastBoundingCoordinate - 0.5 / float64(NO_OF_PIXELS_PER_LINE - 1),
-//          boundingRectangle.SouthBoundingCoordinate + 0.5 / float64(NO_OF_PIXELS_PER_LINE - 1),
-//    }
-//    return upperLeft, lowerRight
-//  }
 
   private byte[] getSrtmTileData(SrtmTile tile) throws IOException {
     File tarFile = archiveNamer.getArchiveFile(tile.archiveNumber);
@@ -111,7 +104,20 @@ public class SrtmElevationService implements Closeable, ElevationService {
     return uncompressed;
   }
 
-  @Override
-  public void close() throws IOException {
+  private BoundingRect calculateUpperLeftAndLowerRightLikeGdalDataSet(BoundingBox boundingBox) {
+    return new BoundingRect(
+        new double[]{boundingBox.west + 0.5 / (NO_OF_PIXELS_PER_LINE - 1), boundingBox.north - 0.5 / (NO_OF_PIXELS_PER_LINE - 1)},
+        new double[]{boundingBox.east - 0.5 / (NO_OF_PIXELS_PER_LINE - 1), boundingBox.south + 0.5 / (NO_OF_PIXELS_PER_LINE - 1)}
+    );
+  }
+
+  private static class BoundingRect {
+    private final double[] upperLeft;
+    private final double[] lowerRight;
+
+    public BoundingRect(double[] upperLeft, double[] lowerRight) {
+      this.upperLeft = upperLeft;
+      this.lowerRight = lowerRight;
+    }
   }
 }
