@@ -16,7 +16,6 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.xml.bind.JAXBException;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
