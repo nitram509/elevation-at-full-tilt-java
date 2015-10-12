@@ -74,13 +74,13 @@ public class SrtmElevationService implements ElevationService {
   }
 
   private int calculateOffset(BoundingBox boundingBox, double latitude, double longitude) {
-    BoundingRect rect = calculateUpperLeftAndLowerRightLikeGdalDataSet(boundingBox);
-    double dLat = Math.abs(latitude - rect.upperLeft[1]);
-    double dLon = Math.abs(longitude - rect.upperLeft[0]);
-    double distLat = Math.abs(rect.upperLeft[1] - rect.lowerRight[1]);
-    double distLon = Math.abs(rect.upperLeft[0] - rect.lowerRight[0]);
-    long nearestLat = (long) (dLat * NO_OF_PIXELS_PER_LINE / distLat);
-    long nearestLon = (long) (dLon * NO_OF_PIXELS_PER_LINE / distLon);
+    final BoundingRect rect = calculateUpperLeftAndLowerRightLikeGdalDataSet(boundingBox);
+    final double dLat = Math.abs(latitude - rect.upperLeft[1]);
+    final double dLon = Math.abs(longitude - rect.upperLeft[0]);
+    final double distLat = Math.abs(rect.upperLeft[1] - rect.lowerRight[1]);
+    final double distLon = Math.abs(rect.upperLeft[0] - rect.lowerRight[0]);
+    final long nearestLat = (long) (dLat * NO_OF_PIXELS_PER_LINE / distLat);
+    final long nearestLon = (long) (dLon * NO_OF_PIXELS_PER_LINE / distLon);
     return (int) (((long) (NO_OF_PIXELS_PER_LINE)) * nearestLat + nearestLon) << 1;
   }
 
