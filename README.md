@@ -1,6 +1,12 @@
 
 # Elevation at full tilt
 
+## Prepare the server
+
+tbd.
+
+## API
+
 ### GET /elevation?lat={latitudeInDegree}&lon={longitudeInDegree}
 
 + Response 200 (application/json)
