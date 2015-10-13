@@ -1,7 +1,7 @@
-package de.bitkings.nitram509.srtm.metafile;
+package de.bitkings.nitram509.elevation.preprocess.srtm.metafile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bitkings.nitram509.Packager;
+import de.bitkings.nitram509.elevation.storage.Packager;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.LngLatAlt;

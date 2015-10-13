@@ -6,7 +6,7 @@
 //
 
 
-package de.bitkings.nitram509.srtm.metafile;
+package de.bitkings.nitram509.elevation.preprocess.srtm.metafile;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.datatype.XMLGregorianCalendar;

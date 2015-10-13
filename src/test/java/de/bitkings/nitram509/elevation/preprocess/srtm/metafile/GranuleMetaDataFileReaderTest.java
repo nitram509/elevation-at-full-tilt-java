@@ -1,4 +1,4 @@
-package de.bitkings.nitram509.srtm.metafile;
+package de.bitkings.nitram509.elevation.preprocess.srtm.metafile;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

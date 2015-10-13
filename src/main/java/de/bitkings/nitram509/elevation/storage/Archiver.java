@@ -1,7 +1,7 @@
-package de.bitkings.nitram509;
+package de.bitkings.nitram509.elevation.storage;
 
-import de.bitkings.nitram509.srtm.BoundingBox;
-import de.bitkings.nitram509.srtm.SrtmTile;
+import de.bitkings.nitram509.elevation.preprocess.srtm.BoundingBox;
+import de.bitkings.nitram509.elevation.preprocess.srtm.SrtmTile;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 

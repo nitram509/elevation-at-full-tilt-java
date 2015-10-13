@@ -1,4 +1,4 @@
-package de.bitkings.nitram509.srtm;
+package de.bitkings.nitram509.elevation.preprocess.srtm;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

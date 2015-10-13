@@ -1,17 +1,20 @@
-package de.bitkings.nitram509;
+package de.bitkings.nitram509.elevation.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.index.SpatialIndex;
 import com.vividsolutions.jts.index.strtree.STRtree;
-import de.bitkings.nitram509.srtm.BoundingBox;
-import de.bitkings.nitram509.srtm.SrtmTile;
-import de.bitkings.nitram509.srtm.SrtmTileArchiveToc;
-import de.bitkings.nitram509.srtm.SrtmTileArchiveTocRepository;
+import de.bitkings.nitram509.elevation.preprocess.srtm.BoundingBox;
+import de.bitkings.nitram509.elevation.preprocess.srtm.SrtmTile;
+import de.bitkings.nitram509.elevation.preprocess.srtm.SrtmTileArchiveToc;
+import de.bitkings.nitram509.elevation.preprocess.srtm.SrtmTileArchiveTocRepository;
+import de.bitkings.nitram509.elevation.storage.ArchiveNamer;
 import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.lz4.LZ4FastDecompressor;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -26,6 +29,8 @@ import java.util.List;
 @Singleton
 @Named
 public class SrtmElevationService implements ElevationService {
+
+  private final static Logger LOG = LoggerFactory.getLogger(SrtmElevationService.class);
 
   private static double NO_OF_PIXELS_PER_LINE = 1201;
 
@@ -67,10 +72,14 @@ public class SrtmElevationService implements ElevationService {
       byte[] srtmTileData = getSrtmTileData(tile);
       if (srtmTileData != null && srtmTileData.length > 1) {
         int offset = calculateOffset(tile.boundingBox, latitude, longitude);
-        return ((int) srtmTileData[offset] & 0xff) << 8 | (int) srtmTileData[offset + 1] & 0xff;
+        return read16bitBigEndian(srtmTileData, offset);
       }
     }
     return Short.MIN_VALUE;
+  }
+
+  private static int read16bitBigEndian(byte[] srtmTileData, int offset) {
+    return ((int) srtmTileData[offset] & 0xff) << 8 | (int) srtmTileData[offset + 1] & 0xff;
   }
 
   private int calculateOffset(BoundingBox boundingBox, double latitude, double longitude) {
@@ -90,7 +99,10 @@ public class SrtmElevationService implements ElevationService {
     for (TarArchiveEntry tae; (tae = tais.getNextTarEntry()) != null; ) {
       if (!tae.getName().startsWith(tile.name)) continue;
       byte[] buf = new byte[(int) tae.getSize()];
-      assert tais.read(buf) > 0;
+      int read = tais.read(buf, 0, (int) tae.getSize());
+      if (read != tae.getSize()) {
+        LOG.warn(String.format("Couldn't read all data from archive. tarFile:%s, fileName:%s", tarFile, tae.getName()));
+      }
       return decompress(buf);
     }
     return null;

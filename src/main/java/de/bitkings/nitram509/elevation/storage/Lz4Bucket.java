@@ -1,9 +1,9 @@
-package de.bitkings.nitram509;
+package de.bitkings.nitram509.elevation.storage;
 
 public class Lz4Bucket {
 
-  final String name;
-  final byte[] data;
+  public final String name;
+  public final byte[] data;
 
   public Lz4Bucket(String name, byte[] data) {
     this.name = name;

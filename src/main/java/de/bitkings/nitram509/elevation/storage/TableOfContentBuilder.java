@@ -1,8 +1,8 @@
-package de.bitkings.nitram509;
+package de.bitkings.nitram509.elevation.storage;
 
-import de.bitkings.nitram509.srtm.SrtmTile;
-import de.bitkings.nitram509.srtm.SrtmTileArchiveToc;
-import de.bitkings.nitram509.srtm.SrtmTileArchiveTocRepository;
+import de.bitkings.nitram509.elevation.preprocess.srtm.SrtmTile;
+import de.bitkings.nitram509.elevation.preprocess.srtm.SrtmTileArchiveToc;
+import de.bitkings.nitram509.elevation.preprocess.srtm.SrtmTileArchiveTocRepository;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;

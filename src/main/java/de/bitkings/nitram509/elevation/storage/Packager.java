@@ -1,8 +1,8 @@
-package de.bitkings.nitram509;
+package de.bitkings.nitram509.elevation.storage;
 
-import de.bitkings.nitram509.srtm.BoundingBox;
-import de.bitkings.nitram509.srtm.metafile.GranuleMetaDataFile;
-import de.bitkings.nitram509.srtm.metafile.GranuleMetaDataFileReader;
+import de.bitkings.nitram509.elevation.preprocess.srtm.BoundingBox;
+import de.bitkings.nitram509.elevation.preprocess.srtm.metafile.GranuleMetaDataFile;
+import de.bitkings.nitram509.elevation.preprocess.srtm.metafile.GranuleMetaDataFileReader;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
 import org.apache.commons.io.IOUtils;

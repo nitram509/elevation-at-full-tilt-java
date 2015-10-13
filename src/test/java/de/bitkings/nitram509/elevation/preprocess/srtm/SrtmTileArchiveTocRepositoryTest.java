@@ -1,4 +1,4 @@
-package de.bitkings.nitram509.srtm;
+package de.bitkings.nitram509.elevation.preprocess.srtm;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

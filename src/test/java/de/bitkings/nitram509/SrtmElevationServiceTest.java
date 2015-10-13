@@ -1,5 +1,6 @@
 package de.bitkings.nitram509;
 
+import de.bitkings.nitram509.elevation.service.SrtmElevationService;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
