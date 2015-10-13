@@ -1,5 +1,5 @@
 
-# Elevation at full tilt
+# Elevation - At Full Tilt
 
 ## Prepare the server
 
@@ -8,6 +8,8 @@ tbd.
 ## API
 
 ### GET /elevation?lat={latitudeInDegree}&lon={longitudeInDegree}
+
+Retrieve the elevation of a given point on earth.
 
 + Response 200 (application/json)
 
