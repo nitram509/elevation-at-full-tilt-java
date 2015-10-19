@@ -8,6 +8,7 @@ import ratpack.guice.Guice;
 import ratpack.server.RatpackServer;
 
 public class ElevationServerApplication {
+
   public static void main(String... args) throws Exception {
     RatpackServer.start(server -> server
         .registry(Guice.registry(b -> {
@@ -20,6 +21,7 @@ public class ElevationServerApplication {
         )
     );
   }
+
   static class ElevationServerApplicationConfigModule implements Module {
 
     @Override
