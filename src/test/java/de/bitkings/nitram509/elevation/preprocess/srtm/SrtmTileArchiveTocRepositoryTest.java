@@ -16,7 +16,7 @@ public class SrtmTileArchiveTocRepositoryTest {
   @BeforeMethod
   public void setUp() throws Exception {
     repository = new SrtmTileArchiveTocRepository();
-    tempFile = File.createTempFile("srtm.tile.index", ".xml");
+    tempFile = File.createTempFile("srtm.tile.index", ".geojson");
     tempFile.deleteOnExit();
   }
 

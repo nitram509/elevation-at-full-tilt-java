@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,19 +41,19 @@ public class SrtmElevationService implements ElevationService {
   public SrtmElevationService() {
     try {
       initSpatialIndex(readTileIndex());
-    } catch (JAXBException e) {
+    } catch (IOException e) {
       throw new RuntimeException(e);
     }
     factory = LZ4Factory.fastestInstance();
   }
 
-  private Collection<SrtmTile> readTileIndex() throws JAXBException {
+  private Collection<SrtmTile> readTileIndex() throws IOException {
     SrtmTileArchiveTocRepository srtmTileArchiveTocRepository = new SrtmTileArchiveTocRepository();
     SrtmTileArchiveToc srtmTileArchiveToc = srtmTileArchiveTocRepository.read(archiveNamer.getTocFile());
     return srtmTileArchiveToc.getAll();
   }
 
-  private void initSpatialIndex(Collection<SrtmTile> srtmTiles) throws JAXBException {
+  private void initSpatialIndex(Collection<SrtmTile> srtmTiles) throws IOException {
     spatialIndex = new STRtree();
     for (SrtmTile srtmTile : srtmTiles) {
       Coordinate upperLeft = new Coordinate(srtmTile.boundingBox.west, srtmTile.boundingBox.north);

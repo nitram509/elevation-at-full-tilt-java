@@ -1,7 +1,5 @@
 package de.bitkings.nitram509.elevation.preprocess;
 
-import java.util.List;
-
 public class TaskConfig {
 
   private String[] srtm3arcsecBaseUrls = new String[0];

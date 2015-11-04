@@ -3,7 +3,8 @@
 .gradle
 *.iml
 /*.tar
-/*.toc.xml
+/test.toc.geojson
+/test.toc.xml
 /build
 /generated
 /target

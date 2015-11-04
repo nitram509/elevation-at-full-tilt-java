@@ -1,20 +1,10 @@
 package de.bitkings.nitram509.elevation.preprocess.srtm;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "index",
-})
-@XmlRootElement(name = "SrtmTileIndex")
-public class SrtmTileArchiveToc implements Serializable {
+public class SrtmTileArchiveToc {
 
   private Map<String, SrtmTile> index = new HashMap<>();
 

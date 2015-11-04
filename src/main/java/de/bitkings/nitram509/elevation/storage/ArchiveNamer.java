@@ -11,7 +11,7 @@ public class ArchiveNamer {
   }
 
   public String getTocFileName() {
-    return baseName + TableOfContentBuilder.TOC_XML_FILE_EXTENSION;
+    return baseName + TableOfContentBuilder.TOC_FILE_EXTENSION;
   }
 
   public File getTocFile() {
