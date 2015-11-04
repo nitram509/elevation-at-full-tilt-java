@@ -4,6 +4,8 @@ import java.io.File;
 
 public class ArchiveNamer {
 
+  private static final String TOC_FILE_EXTENSION = ".toc.geojson";
+
   private final String baseName;
 
   public ArchiveNamer(String baseName) {
@@ -11,7 +13,7 @@ public class ArchiveNamer {
   }
 
   public String getTocFileName() {
-    return baseName + TableOfContentBuilder.TOC_FILE_EXTENSION;
+    return baseName + TOC_FILE_EXTENSION;
   }
 
   public File getTocFile() {

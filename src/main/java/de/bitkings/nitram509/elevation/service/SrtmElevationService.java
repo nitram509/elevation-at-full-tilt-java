@@ -73,6 +73,9 @@ public class SrtmElevationService implements ElevationService {
         int offset = calculateOffset(tile.boundingBox, latitude, longitude);
         return read16bitBigEndian(srtmTileData, offset);
       }
+    } else {
+      String msg = String.format("WTF, overlapping envelopes? lat=%s, lon=%s", latitude, longitude);
+      throw new UnsupportedOperationException(msg);
     }
     return Short.MIN_VALUE;
   }

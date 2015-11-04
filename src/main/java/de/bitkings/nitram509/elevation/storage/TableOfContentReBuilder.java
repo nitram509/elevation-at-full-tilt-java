@@ -35,7 +35,7 @@ class TableOfContentReBuilder {
       readIntoToc(toc, archiveFile, (short) archiveNumber);
     }
     SrtmTileArchiveTocRepository repository = new SrtmTileArchiveTocRepository();
-    repository.write(toc, new File(baseName + TableOfContentBuilder.TOC_FILE_EXTENSION));
+    repository.write(toc, new ArchiveNamer(baseName).getTocFile());
   }
 
   private void readIntoToc(SrtmTileArchiveToc toc, File archiveFile, short archiveNumber) throws IOException {
