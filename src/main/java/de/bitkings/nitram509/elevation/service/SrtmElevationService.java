@@ -90,9 +90,9 @@ public class SrtmElevationService implements ElevationService {
     final double dLon = Math.abs(longitude - rect.upperLeft[0]);
     final double distLat = Math.abs(rect.upperLeft[1] - rect.lowerRight[1]);
     final double distLon = Math.abs(rect.upperLeft[0] - rect.lowerRight[0]);
-    final long nearestLat = (long) (dLat * NO_OF_PIXELS_PER_LINE / distLat);
-    final long nearestLon = (long) (dLon * NO_OF_PIXELS_PER_LINE / distLon);
-    return (int) (((long) (NO_OF_PIXELS_PER_LINE)) * nearestLat + nearestLon) << 1;
+    final long snapToLat = (long) (dLat * NO_OF_PIXELS_PER_LINE / distLat);
+    final long snapToLon = (long) (dLon * NO_OF_PIXELS_PER_LINE / distLon);
+    return (int) (((long) (NO_OF_PIXELS_PER_LINE)) * snapToLat + snapToLon) << 1;
   }
 
   private byte[] getSrtmTileData(SrtmTile tile) throws IOException {
@@ -118,6 +118,7 @@ public class SrtmElevationService implements ElevationService {
   }
 
   private BoundingRect calculateUpperLeftAndLowerRightLikeGdalDataSet(BoundingBox boundingBox) {
+    // ToDo: dos this work on south of earth?
     return new BoundingRect(
         new double[]{boundingBox.west + 0.5 / (NO_OF_PIXELS_PER_LINE - 1), boundingBox.north - 0.5 / (NO_OF_PIXELS_PER_LINE - 1)},
         new double[]{boundingBox.east - 0.5 / (NO_OF_PIXELS_PER_LINE - 1), boundingBox.south + 0.5 / (NO_OF_PIXELS_PER_LINE - 1)}
